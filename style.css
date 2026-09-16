@@ -1,0 +1,234 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+h1 {
+  margin-bottom: 12px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 18px;
+  align-items: start;
+}
+
+.game-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.game-card,
+.controls-card,
+.panel {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #e5e7eb;
+  border-radius: 8px;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Tata Letak Kontrol di Atas Map */
+.controls-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.control-group {
+  margin-bottom: 4px;
+}
+
+label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+select,
+button {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #9ca3af;
+  border-radius: 7px;
+  background: white;
+  font-size: 14px;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f3f4f6;
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.stats h2,
+.history h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.stats,
+.history,
+.message {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+/* Mengurangi/menghilangkan jarak untuk tabel perbandingan */
+.compare {
+  /* margin-top: 6px;   Atur angka ini sesuai keinginan (misal 0px - 6px) */
+  padding-top: 6px;  /* Atur angka ini sesuai keinginan */
+  border-top: 1px solid #e5e7eb; 
+}
+
+.panel .stats:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.stats table,
+.history table,
+.compare table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.stats td,
+.history th,
+.history td,
+.compare th,
+.compare td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 5px 4px;
+  text-align: left;
+}
+
+.history-box {
+  max-height: 190px;
+  overflow: auto;
+}
+
+.status-success {
+  font-weight: 700;
+}
+
+.status-error {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+/* Modal Game Over */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-card {
+  background: white;
+  padding: 30px 40px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  transform: scale(1);
+  animation: popupAnim 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  max-width: 360px;
+  width: 90%;
+}
+
+@keyframes popupAnim {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.game-over-icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.modal-card h2 {
+  margin: 0 0 16px;
+  font-size: 28px;
+  color: #ef4444;
+  letter-spacing: 1px;
+}
+
+.modal-card button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  font-weight: bold;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.modal-card button:hover {
+  background: #dc2626;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
