@@ -53,7 +53,6 @@ canvas {
   image-rendering: crisp-edges;
 }
 
-/* Tata Letak Kontrol di Atas Map */
 .controls-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -110,10 +109,8 @@ button:hover {
   padding-top: 12px;
   border-top: 1px solid #e5e7eb;
 }
-/* Mengurangi/menghilangkan jarak untuk tabel perbandingan */
 .compare {
-  /* margin-top: 6px;   Atur angka ini sesuai keinginan (misal 0px - 6px) */
-  padding-top: 6px;  /* Atur angka ini sesuai keinginan */
+  padding-top: 6px; 
   border-top: 1px solid #e5e7eb; 
 }
 
@@ -148,6 +145,7 @@ button:hover {
 
 .status-success {
   font-weight: 700;
+  color: #15803d;
 }
 
 .status-error {
@@ -155,7 +153,6 @@ button:hover {
   font-weight: 700;
 }
 
-/* Modal Game Over */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -190,14 +187,8 @@ button:hover {
 }
 
 @keyframes popupAnim {
-  0% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .game-over-icon {
