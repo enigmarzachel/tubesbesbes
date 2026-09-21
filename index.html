@@ -5,6 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
+  <!-- Memuat Pyodide untuk menjalankan Python di Browser (WebAssembly) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+  <title>Cimahi baik dikejar lampung</title>
 </head>
 
 <body>
@@ -14,7 +17,6 @@
     <div class="layout">
       <!-- Sisi Kiri: Kontrol (di atas Map) + Map -->
       <div class="game-column">
-        <!-- Baris Kontrol di Atas Map (Sejajar Lebar Map) -->
         <div class="controls-card">
           <div class="controls-row">
             <div class="control-group">
@@ -40,17 +42,16 @@
           </div>
         </div>
 
-        <!-- Canvas / Map -->
         <div class="game-card">
           <canvas id="gameCanvas" width="800" height="600"></canvas>
         </div>
       </div>
 
-      <!-- Sisi Kanan: Panel Informasi & Statistik (Sejajar Tinggi dari Atas) -->
+      <!-- Sisi Kanan: Panel Informasi & Statistik -->
       <div class="panel">
         <div class="stats">
           <h2>Statistik</h2>
-          <div id="statsContent">Gerakkan Player untuk mulai.</div>
+          <div id="statsContent"></div>
         </div>
 
         <div class="history">
@@ -76,7 +77,6 @@
     </div>
   </div>
 
-  <script src="pathfinding.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

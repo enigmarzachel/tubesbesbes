@@ -1,7 +1,10 @@
 // ================================================================
 // script.js
-// Moving Player + NPC chase (Otomatis) + Wavefront Red + Always-On Overlay
+// Powered by Python (Pyodide WebAssembly)
 // ================================================================
+
+let pyodideReady = false;
+let pyodideInstance = null;
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -10,12 +13,10 @@ const algorithmSelect = document.getElementById("algorithm");
 const heuristicSelect = document.getElementById("heuristic");
 const resetBtn = document.getElementById("resetBtn");
 const randomBtn = document.getElementById("randomBtn");
-
 const statsContent = document.getElementById("statsContent");
 const historyContent = document.getElementById("historyContent");
 const message = document.getElementById("message");
 const compareResult = document.getElementById("compareResult");
-
 const gameOverModal = document.getElementById("gameOverModal");
 const restartBtn = document.getElementById("restartBtn");
 
@@ -26,16 +27,15 @@ const GRID_WIDTH = COLS * CELL;
 const GRID_HEIGHT = ROWS * CELL;
 
 let MAP = [];
-
 const GRASS_KEYS = ["grass1", "grass2", "grass3"];
 const TREE_KEYS = ["tree1", "tree2"];
-
 const IMAGES = {};
+
 function preloadImage(assetKey, src) {
   const img = new Image();
   img.src = src;
   IMAGES[assetKey] = img;
-  img.addEventListener("load", () => draw());
+  img.addEventListener("load", () => { if (pyodideReady) draw(); });
 }
 preloadImage("grass1", "aset/grass.png");
 preloadImage("grass2", "aset/grass2.png");
@@ -46,6 +46,40 @@ preloadImage("water", "aset/water.png");
 preloadImage("npc", "aset/npc.png");
 preloadImage("player", "aset/player.png");
 
+// ----------------------------------------------------
+// INISIALISASI PYTHON VIA WEBASSEMBLY (PYODIDE)
+// ----------------------------------------------------
+async function initPython() {
+  try {
+    message.className = "message";
+    
+    
+    // Load Engine
+    pyodideInstance = await loadPyodide();
+    
+    // Load Script Python kita
+    const response = await fetch('pathfinding.py');
+    const pythonCode = await response.text();
+    await pyodideInstance.runPythonAsync(pythonCode);
+    
+    pyodideReady = true;
+    message.className = "message status-success";
+    
+    statsContent.innerHTML = "Gerakkan Player untuk mulai.";
+    
+    // Setelah siap, mulai game
+    heuristicSelect.disabled = false;
+    randomizeMap();
+  } catch (err) {
+    console.error("Gagal memuat Python", err);
+    message.className = "message status-error";
+    message.textContent = "Gagal memuat Engine Python. Pastikan menggunakan Live Server.";
+  }
+}
+
+// ----------------------------------------------------
+// GAME LOGIC & RENDER
+// ----------------------------------------------------
 function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
@@ -57,87 +91,37 @@ function generateTileVariants() {
     const row = [];
     for (let x = 0; x < COLS; x++) {
       const terrain = MAP[y][x];
-      if (terrain === "#") {
-        row.push(pickRandom(TREE_KEYS));
-      } else if (terrain === "R") {
-        row.push("water");
-      } else {
-        row.push(pickRandom(GRASS_KEYS));
-      }
+      if (terrain === "#") row.push(pickRandom(TREE_KEYS));
+      else if (terrain === "R") row.push("water");
+      else row.push(pickRandom(GRASS_KEYS));
     }
     variants.push(row);
   }
   return variants;
 }
 
-const grid = {
-  cols: COLS,
-  rows: ROWS,
-  isInside(cell) {
-    return cell.x >= 0 && cell.x < this.cols &&
-      cell.y >= 0 && cell.y < this.rows;
-  },
-  getTerrain(cell) {
-    return MAP[cell.y][cell.x];
-  },
-  isPassable(cell) {
-    return this.isInside(cell) && this.getTerrain(cell) !== "#";
-  },
-  getStepCost(cell) {
-    return this.getTerrain(cell) === "R" ? 7 : 1;
-  },
-  getNeighbors(cell) {
-    const moves = [
-      { x: 0, y: -1 },
-      { x: 0, y: 1 },
-      { x: -1, y: 0 },
-      { x: 1, y: 0 }
-    ];
-    const neighbors = [];
-    for (const move of moves) {
-      const next = {
-        x: cell.x + move.x,
-        y: cell.y + move.y
-      };
-      if (this.isPassable(next)) {
-        neighbors.push(next);
-      }
-    }
-    return neighbors;
-  }
-};
-
 let initialNpc = { x: 0, y: 0 };
 let initialPlayer = { x: 0, y: 0 };
-
 let npcCell = { ...initialNpc };
 let playerCell = { ...initialPlayer };
 let currentResult = null;
 let isChasing = true;
 let isGameOver = false;
+let isProcessingMove = false;
 
 let totalSearches = 0;
 let totalExpanded = 0;
 let totalSearchTime = 0;
 let searchHistory = [];
 
-// ---- Wavefront expansion animation state ----
 let animContours = [];
 let animRevealedKeys = new Set();
 let animStepIndex = 0;
 let animTimer = null;
 let animPlaying = false;
 
-function cellToPixel(cell) {
-  return {
-    x: cell.x * CELL,
-    y: cell.y * CELL
-  };
-}
-
-function sameCell(a, b) {
-  return a.x === b.x && a.y === b.y;
-}
+function cellToPixel(cell) { return { x: cell.x * CELL, y: cell.y * CELL }; }
+function sameCell(a, b) { return a.x === b.x && a.y === b.y; }
 
 function drawSprite(assetKey, dx, dy, size) {
   const img = IMAGES[assetKey];
@@ -160,24 +144,12 @@ function drawGrid() {
       const variantKey = tileVariantMap[y] ? tileVariantMap[y][x] : null;
 
       if (terrain === "#") {
-        if (!drawSprite("grass1", px, py, CELL)) {
-          ctx.fillStyle = "#d9f99d";
-          ctx.fillRect(px, py, CELL, CELL);
-        }
-        if (!drawSprite(variantKey, px, py, CELL)) {
-          ctx.fillStyle = "#6b7280";
-          ctx.fillRect(px + 4, py + 4, CELL - 8, CELL - 8);
-        }
+        if (!drawSprite("grass1", px, py, CELL)) { ctx.fillStyle = "#d9f99d"; ctx.fillRect(px, py, CELL, CELL); }
+        if (!drawSprite(variantKey, px, py, CELL)) { ctx.fillStyle = "#6b7280"; ctx.fillRect(px + 4, py + 4, CELL - 8, CELL - 8); }
       } else if (terrain === "R") {
-        if (!drawSprite("water", px, py, CELL)) {
-          ctx.fillStyle = "#60a5fa";
-          ctx.fillRect(px, py, CELL, CELL);
-        }
+        if (!drawSprite("water", px, py, CELL)) { ctx.fillStyle = "#60a5fa"; ctx.fillRect(px, py, CELL, CELL); }
       } else {
-        if (!drawSprite(variantKey, px, py, CELL)) {
-          ctx.fillStyle = "#d9f99d";
-          ctx.fillRect(px, py, CELL, CELL);
-        }
+        if (!drawSprite(variantKey, px, py, CELL)) { ctx.fillStyle = "#d9f99d"; ctx.fillRect(px, py, CELL, CELL); }
       }
 
       ctx.strokeStyle = "rgba(107, 114, 128, 0.35)";
@@ -196,13 +168,11 @@ function drawGrid() {
 
 function drawDebug() {
   if (!currentResult) return;
-
   for (const cellKey of animRevealedKeys) {
     const [x, y] = cellKey.split(",").map(Number);
     ctx.fillStyle = "rgba(24, 132, 252, 0.68)";
     ctx.fillRect(x * CELL + 5, y * CELL + 5, CELL - 10, CELL - 10);
   }
-
   const lastContour = animContours[animStepIndex - 1];
   if (lastContour) {
     ctx.strokeStyle = "rgba(235, 37, 37, 0.9)";
@@ -211,7 +181,6 @@ function drawDebug() {
       ctx.strokeRect(node.x * CELL + 3, node.y * CELL + 3, CELL - 6, CELL - 6);
     }
   }
-
   for (const cell of currentResult.frontierNodes) {
     ctx.fillStyle = "rgba(41, 30, 244, 0.79)";
     ctx.fillRect(cell.x * CELL + 9, cell.y * CELL + 9, CELL - 18, CELL - 18);
@@ -225,31 +194,15 @@ function drawDebug() {
 function drawEntities() {
   const spriteSize = CELL - 4;
   const inset = 2;
-
   const player = cellToPixel(playerCell);
   if (!drawSprite("player", player.x + inset, player.y + inset, spriteSize)) {
-    ctx.fillStyle = "#8b5cf6";
-    ctx.beginPath();
-    ctx.arc(player.x + CELL / 2, player.y + CELL / 2, 13, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "white";
-    ctx.font = "bold 12px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("P", player.x + CELL / 2, player.y + CELL / 2);
+    ctx.fillStyle = "#8b5cf6"; ctx.beginPath(); ctx.arc(player.x + CELL / 2, player.y + CELL / 2, 13, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "white"; ctx.font = "bold 12px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("P", player.x + CELL / 2, player.y + CELL / 2);
   }
-
   const npc = cellToPixel(npcCell);
   if (!drawSprite("npc", npc.x + inset, npc.y + inset, spriteSize)) {
-    ctx.fillStyle = "#fb0202";
-    ctx.beginPath();
-    ctx.arc(npc.x + CELL / 2, npc.y + CELL / 2, 13, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "white";
-    ctx.font = "bold 12px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("N", npc.x + CELL / 2, npc.y + CELL / 2);
+    ctx.fillStyle = "#fb0202"; ctx.beginPath(); ctx.arc(npc.x + CELL / 2, npc.y + CELL / 2, 13, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "white"; ctx.font = "bold 12px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("N", npc.x + CELL / 2, npc.y + CELL / 2);
   }
 
   if (isChasing) {
@@ -263,79 +216,35 @@ function drawEntities() {
   }
 }
 
-function draw() {
-  drawGrid();
-  drawDebug();
-  drawEntities();
-}
-
-function getSelectedHeuristic() {
-  return getHeuristic(heuristicSelect.value);
-}
-
-function getAlgorithmName() {
-  return algorithmSelect.value === "ucs" ? "UCS" : "A*";
-}
-
-function getHeuristicName() {
-  if (algorithmSelect.value === "ucs") return "Zero";
-  return heuristicSelect.options[heuristicSelect.selectedIndex].text;
-}
+function draw() { drawGrid(); drawDebug(); drawEntities(); }
 
 function updateStats(result) {
-  if (!result) {
-    statsContent.innerHTML = "Belum ada perhitungan.";
-    return;
-  }
-  const averageExpanded = totalSearches > 0 ? (totalExpanded / totalSearches).toFixed(2) : "0";
-  const averageTime = totalSearches > 0 ? (totalSearchTime / totalSearches).toFixed(3) : "0";
+  if (!result) return;
+  const avgEx = totalSearches > 0 ? (totalExpanded / totalSearches).toFixed(2) : "0";
+  const avgTi = totalSearches > 0 ? (totalSearchTime / totalSearches).toFixed(3) : "0";
   statsContent.innerHTML = `
     <table>
-      <tr><td>Algoritma</td><td>${getAlgorithmName()}</td></tr>
-      <tr><td>Heuristik</td><td>${getHeuristicName()}</td></tr>
-      <tr><td>Tujuan Saat Ini</td><td>(${playerCell.x}, ${playerCell.y})</td></tr>
-      <tr><td>Expanded Saat Ini</td><td>${result.expandedNodes}</td></tr>
-      <tr><td>Path cost Saat Ini</td><td>${result.pathCost ?? "No path"}</td></tr>
-      <tr><td>Path length Saat Ini</td><td>${result.pathLength}</td></tr>
-      <tr><td>Waktu pencarian Saat Ini</td><td>${result.searchTimeMs.toFixed(3)} ms</td></tr>
-      <tr><td>Total pencarian</td><td>${totalSearches}</td></tr>
-      <tr><td>Total expanded</td><td>${totalExpanded}</td></tr>
-      <tr><td>Rata-rata expanded</td><td>${averageExpanded}</td></tr>
-      <tr><td>Rata-rata waktu</td><td>${averageTime} ms</td></tr>
-    </table>
-  `;
+      <tr><td>Algoritma</td><td>${algorithmSelect.value.toUpperCase()}</td></tr>
+      <tr><td>Tujuan</td><td>(${playerCell.x}, ${playerCell.y})</td></tr>
+      <tr><td>Expanded</td><td>${result.expandedNodes}</td></tr>
+      <tr><td>Path cost</td><td>${result.pathCost ?? "No path"}</td></tr>
+      <tr><td>Waktu cari (Python)</td><td>${result.searchTimeMs.toFixed(3)} ms</td></tr>
+      <tr><td>Avg Waktu</td><td>${avgTi} ms</td></tr>
+    </table>`;
 }
 
 function updateHistory() {
-  if (searchHistory.length === 0) {
-    historyContent.innerHTML = "Belum ada perhitungan.";
-    return;
-  }
   const recent = searchHistory.slice(-12).reverse();
   historyContent.innerHTML = `
     <div class="history-box">
       <table>
-        <tr><th>No</th><th>Aksi</th><th>Tujuan</th><th>Expanded</th><th>Cost</th></tr>
-        ${recent.map(item => {
-    const icon = item.source === "player" ? "Player" : "NPC";
-    return `
-            <tr>
-              <td>${item.number}</td>
-              <td>${icon}</td>
-              <td>${item.goal}</td>
-              <td>${item.expanded}</td>
-              <td>${item.cost}</td>
-            </tr>
-          `;
-  }).join("")}
+        <tr><th>No</th><th>Aksi</th><th>Goal</th><th>Cost</th></tr>
+        ${recent.map(item => `
+          <tr><td>${item.number}</td><td>${item.source}</td><td>${item.goal}</td><td>${item.cost}</td></tr>
+        `).join("")}
       </table>
-    </div>
-  `;
+    </div>`;
 }
-
-// ================================================================
-// Animasi wavefront ekspansi node (Otomatis)
-// ================================================================
 
 function buildContours(expansionOrder) {
   const contours = [];
@@ -343,9 +252,8 @@ function buildContours(expansionOrder) {
   let currentGroup = null;
   for (const node of expansionOrder) {
     const levelKey = Math.round(node.level * 1000) / 1000;
-    if (currentGroup && levelKey === currentLevel) {
-      currentGroup.push(node);
-    } else {
+    if (currentGroup && levelKey === currentLevel) currentGroup.push(node);
+    else {
       currentGroup = [node];
       currentLevel = levelKey;
       contours.push({ level: levelKey, nodes: currentGroup });
@@ -354,14 +262,7 @@ function buildContours(expansionOrder) {
   return contours;
 }
 
-function stopAnimTimer() {
-  if (animTimer) {
-    clearInterval(animTimer);
-    animTimer = null;
-  }
-  animPlaying = false;
-}
-
+function stopAnimTimer() { if (animTimer) { clearInterval(animTimer); animTimer = null; } animPlaying = false; }
 function prepareAnimation(result) {
   stopAnimTimer();
   animContours = result && result.expansionOrder ? buildContours(result.expansionOrder) : [];
@@ -369,90 +270,74 @@ function prepareAnimation(result) {
   animStepIndex = 0;
   playAnimation();
 }
-
 function stepAnimationOnce() {
-  if (animStepIndex >= animContours.length) {
-    stopAnimTimer();
-    return;
-  }
-  const contour = animContours[animStepIndex];
-  for (const node of contour.nodes) {
-    animRevealedKeys.add(`${node.x},${node.y}`);
-  }
-  animStepIndex++;
-  draw();
-  if (animStepIndex >= animContours.length) {
-    stopAnimTimer();
-  }
+  if (animStepIndex >= animContours.length) { stopAnimTimer(); return; }
+  for (const node of animContours[animStepIndex].nodes) animRevealedKeys.add(`${node.x},${node.y}`);
+  animStepIndex++; draw();
+  if (animStepIndex >= animContours.length) stopAnimTimer();
 }
-
 function playAnimation() {
   if (!currentResult || animContours.length === 0) return;
-  if (animStepIndex >= animContours.length) {
-    animRevealedKeys = new Set();
-    animStepIndex = 0;
-  }
+  if (animStepIndex >= animContours.length) { animRevealedKeys = new Set(); animStepIndex = 0; }
   animPlaying = true;
   animTimer = setInterval(stepAnimationOnce, 320);
 }
 
-function showGameOverModal() {
-  isGameOver = true;
-  gameOverModal.classList.remove("hidden");
+function showGameOverModal() { isGameOver = true; gameOverModal.classList.remove("hidden"); }
+function hideGameOverModal() { isGameOver = false; gameOverModal.classList.add("hidden"); }
+
+// ----------------------------------------------------
+// KOMUNIKASI DENGAN PYTHON
+// ----------------------------------------------------
+function runPythonPathfinding(mapData, startData, goalData, algo, heur) {
+  pyodideInstance.globals.set("js_map", JSON.stringify(mapData));
+  pyodideInstance.globals.set("js_start", JSON.stringify(startData));
+  pyodideInstance.globals.set("js_goal", JSON.stringify(goalData));
+  pyodideInstance.globals.set("js_algo", algo);
+  pyodideInstance.globals.set("js_heur", heur);
+  
+  const resultJson = pyodideInstance.runPython(`search_path_json(js_map, js_start, js_goal, js_algo, js_heur)`);
+  return JSON.parse(resultJson);
 }
 
-function hideGameOverModal() {
-  isGameOver = false;
-  gameOverModal.classList.add("hidden");
-}
-
-function compareAlgorithms() {
+async function compareAlgorithms() {
+  if (!pyodideReady) return;
   const configs = [
-    { name: "UCS", algorithm: "ucs", heuristic: zeroHeuristic },
-    { name: "A* Manhattan", algorithm: "astar", heuristic: manhattanHeuristic },
-    { name: "A* Euclidean", algorithm: "astar", heuristic: euclideanHeuristic }
+    { name: "UCS", algorithm: "ucs", heuristic: "zero" },
+    { name: "A* Manhattan", algorithm: "astar", heuristic: "manhattan" },
+    { name: "A* Euclidean", algorithm: "astar", heuristic: "euclidean" }
   ];
-  const results = configs.map(config => {
-    const result = searchPath(grid, npcCell, playerCell, {
-      algorithm: config.algorithm,
-      heuristic: config.heuristic
-    });
-    return { ...config, result };
+  
+  const results = configs.map(cfg => {
+    const res = runPythonPathfinding(MAP, npcCell, playerCell, cfg.algorithm, cfg.heuristic);
+    return { name: cfg.name, expandedNodes: res.expandedNodes, pathCost: res.pathCost, pathLength: res.pathLength };
   });
 
   compareResult.innerHTML = `
-    <h3>Perbandingan pada Posisi Saat Ini</h3>
+    <h3>Perbandingan Python (Posisi Saat Ini)</h3>
     <table>
       <tr><th>Algoritma</th><th>Expanded</th><th>Cost</th><th>Panjang</th></tr>
       ${results.map(item => `
-        <tr>
-          <td>${item.name}</td>
-          <td>${item.result.expandedNodes}</td>
-          <td>${item.result.pathCost ?? "No path"}</td>
-          <td>${item.result.pathLength}</td>
-        </tr>
+        <tr><td>${item.name}</td><td>${item.expandedNodes}</td><td>${item.pathCost ?? "No path"}</td><td>${item.pathLength}</td></tr>
       `).join("")}
-    </table>
-  `;
+    </table>`;
 }
 
-function calculateChasePath(showMessage = true, source = "player") {
-  const algorithm = algorithmSelect.value;
-  const heuristic = algorithm === "ucs" ? zeroHeuristic : getSelectedHeuristic();
+async function calculateChasePath(showMessage = true, source = "Player") {
+  if (!pyodideReady) return null;
+  const algo = algorithmSelect.value;
+  const heur = algo === "ucs" ? "zero" : heuristicSelect.value;
 
-  const result = searchPath(grid, npcCell, playerCell, { algorithm, heuristic });
+  const result = runPythonPathfinding(MAP, npcCell, playerCell, algo, heur);
   currentResult = result;
-
+  
   totalSearches++;
   totalExpanded += result.expandedNodes;
   totalSearchTime += result.searchTimeMs;
-
+  
   searchHistory.push({
-    number: totalSearches,
-    source: source,
-    goal: `(${playerCell.x}, ${playerCell.y})`,
-    expanded: result.expandedNodes,
-    cost: result.pathCost ?? "No path"
+    number: totalSearches, source: source, goal: `(${playerCell.x}, ${playerCell.y})`,
+    expanded: result.expandedNodes, cost: result.pathCost ?? "-"
   });
 
   updateStats(result);
@@ -461,166 +346,105 @@ function calculateChasePath(showMessage = true, source = "player") {
   compareAlgorithms();
 
   if (showMessage) {
-    if (result.found) {
-      message.className = "message status-success";
-      message.textContent = `Path ditemukan ke Player. Search #${totalSearches}.`;
-    } else {
-      message.className = "message status-error";
-      message.textContent = "No path found.";
-    }
+    if (result.found) { message.className = "message status-success"; message.textContent = `Path ditemukan oleh Python.`; }
+    else { message.className = "message status-error"; message.textContent = "No path found."; }
   }
   draw();
   return result;
 }
 
-function moveNpcOneStep() {
-  if (!isChasing || isGameOver) return;
-  if (!currentResult || !currentResult.found) return;
-
-  if (sameCell(npcCell, playerCell)) {
-    showGameOverModal();
-    return;
-  }
+async function moveNpcOneStep() {
+  if (!isChasing || isGameOver || !currentResult || !currentResult.found) return;
+  if (sameCell(npcCell, playerCell)) { showGameOverModal(); return; }
 
   const path = currentResult.path;
   const npcIndex = path.findIndex(cell => sameCell(cell, npcCell));
   if (npcIndex < 0 || npcIndex + 1 >= path.length) return;
 
   npcCell = { ...path[npcIndex + 1] };
-  calculateChasePath(false, "npc");
+  await calculateChasePath(false, "NPC");
 
   if (sameCell(npcCell, playerCell)) {
-    message.className = "message status-error";
-    message.textContent = "Tertangkap! NPC berhasil menangkap Player.";
+    message.className = "message status-error"; message.textContent = "Tertangkap!";
     setTimeout(showGameOverModal, 400);
   }
 }
 
-function movePlayer(dx, dy) {
-  if (isGameOver || sameCell(npcCell, playerCell)) return;
-
+async function movePlayer(dx, dy) {
+  if (isGameOver || sameCell(npcCell, playerCell) || !pyodideReady) return;
   const next = { x: playerCell.x + dx, y: playerCell.y + dy };
-  if (!grid.isPassable(next)) {
-    message.className = "message status-error";
-    return;
-  }
-  if (sameCell(next, playerCell)) return;
-
+  if (next.x < 0 || next.x >= COLS || next.y < 0 || next.y >= ROWS || MAP[next.y][next.x] === "#") return;
+  
   playerCell = next;
-  calculateChasePath(false, "player");
-
+  await calculateChasePath(false, "Player");
+  
   if (isChasing) {
-    moveNpcOneStep();
-    if (!sameCell(npcCell, playerCell)) {
-      message.className = "message status-success";
-    }
+    await moveNpcOneStep();
+    if (!sameCell(npcCell, playerCell)) message.className = "message status-success";
   }
   draw();
 }
 
-function resetGame() {
+async function randomizeMap() {
+  if (!pyodideReady) return;
   hideGameOverModal();
-  isChasing = true;
-  npcCell = { ...initialNpc };
-  playerCell = { ...initialPlayer };
-  currentResult = null;
-  totalSearches = 0;
-  totalExpanded = 0;
-  totalSearchTime = 0;
-  searchHistory = [];
-  stopAnimTimer();
-  animContours = [];
-  animRevealedKeys = new Set();
-  animStepIndex = 0;
-  statsContent.innerHTML = "Gerakkan Player untuk mulai.";
-  historyContent.innerHTML = "Belum ada perhitungan.";
-  compareResult.innerHTML = "";
-  message.className = "message";
-  message.textContent = "";
-  calculateChasePath(false, "player");
-}
-
-function hasPassableNeighbor(cell) {
-  return grid.getNeighbors(cell).length > 0;
-}
-
-function randomizeMap() {
-  hideGameOverModal();
-
   let mapValid = false;
+  
   while (!mapValid) {
     MAP = [];
     for (let y = 0; y < ROWS; y++) {
       let row = "";
       for (let x = 0; x < COLS; x++) {
         const rand = Math.random();
-        if (rand < 0.20) row += "#";
-        else if (rand < 0.35) row += "R";
-        else row += ".";
+        if (rand < 0.20) row += "#"; else if (rand < 0.35) row += "R"; else row += ".";
       }
       MAP.push(row);
     }
-
     tileVariantMap = generateTileVariants();
 
-    function getRandomEmptyCell(mustBeMovable = false) {
-      let cell;
+    function getEmptyCell() {
       let attempts = 0;
-      while (attempts < 500) {
-        attempts++;
-        const rx = Math.floor(Math.random() * COLS);
-        const ry = Math.floor(Math.random() * ROWS);
-        if (MAP[ry][rx] !== "#") {
-          cell = { x: rx, y: ry };
-          if (!mustBeMovable || hasPassableNeighbor(cell)) {
-            return cell;
-          }
-        }
+      while (attempts++ < 500) {
+        const c = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
+        if (MAP[c.y][c.x] !== "#") return c;
       }
-      return cell;
+      return { x: 0, y: 0 };
     }
 
-    initialNpc = getRandomEmptyCell(false);
-    let attempts = 0;
-    do {
-      attempts++;
-      initialPlayer = getRandomEmptyCell(true);
-    } while (sameCell(initialNpc, initialPlayer) && attempts < 100);
+    initialNpc = getEmptyCell();
+    do { initialPlayer = getEmptyCell(); } while (sameCell(initialNpc, initialPlayer));
 
-    const testResult = searchPath(grid, initialNpc, initialPlayer, { algorithm: "ucs" });
-    if (testResult.found && testResult.path.length > 1) {
-      mapValid = true;
-    }
+    const testRes = runPythonPathfinding(MAP, initialNpc, initialPlayer, "ucs", "zero");
+    if (testRes.found && testRes.path.length > 1) mapValid = true;
   }
-
-  resetGame();
+  await resetGame();
 }
 
-function handleKeydown(event) {
-  const keyName = event.key.toLowerCase();
-  const moves = {
-    w: { x: 0, y: -1 }, arrowup: { x: 0, y: -1 },
-    s: { x: 0, y: 1 }, arrowdown: { x: 0, y: 1 },
-    a: { x: -1, y: 0 }, arrowleft: { x: -1, y: 0 },
-    d: { x: 1, y: 0 }, arrowright: { x: 1, y: 0 }
-  };
-  if (!moves[keyName]) return;
+async function resetGame() {
+  hideGameOverModal();
+  isChasing = true; npcCell = { ...initialNpc }; playerCell = { ...initialPlayer };
+  currentResult = null; totalSearches = 0; totalExpanded = 0; totalSearchTime = 0; searchHistory = [];
+  stopAnimTimer(); animContours = []; animRevealedKeys = new Set(); animStepIndex = 0;
+  await calculateChasePath(false, "Player");
+}
+
+window.addEventListener("keydown", async (event) => {
+  const moves = { w: {x:0, y:-1}, s: {x:0, y:1}, a: {x:-1, y:0}, d: {x:1, y:0},
+                  arrowup: {x:0, y:-1}, arrowdown: {x:0, y:1}, arrowleft: {x:-1, y:0}, arrowright: {x:1, y:0} };
+  const k = event.key.toLowerCase();
+  if (!moves[k]) return;
   event.preventDefault();
-  movePlayer(moves[keyName].x, moves[keyName].y);
-}
-
-algorithmSelect.addEventListener("change", () => {
-  heuristicSelect.disabled = algorithmSelect.value === "ucs";
-  calculateChasePath(true, "player");
-});
-heuristicSelect.addEventListener("change", () => {
-  if (algorithmSelect.value === "astar") calculateChasePath(true, "player");
+  if (isProcessingMove) return;
+  isProcessingMove = true;
+  await movePlayer(moves[k].x, moves[k].y);
+  isProcessingMove = false;
 });
 
+algorithmSelect.addEventListener("change", async () => { heuristicSelect.disabled = algorithmSelect.value === "ucs"; await calculateChasePath(true, "Player"); });
+heuristicSelect.addEventListener("change", async () => { if (algorithmSelect.value === "astar") await calculateChasePath(true, "Player"); });
 resetBtn.addEventListener("click", resetGame);
 randomBtn.addEventListener("click", randomizeMap);
 restartBtn.addEventListener("click", randomizeMap);
-window.addEventListener("keydown", handleKeydown);
 
-heuristicSelect.disabled = false;
-randomizeMap();
+// Panggil setup python
+initPython();
