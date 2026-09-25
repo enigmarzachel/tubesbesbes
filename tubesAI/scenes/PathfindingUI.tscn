@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://b0nor5o7q75ww"]
+
+[ext_resource type="Script" uid="uid://cbg343mypn6cu" path="res://scripts/UI/PathfindingUI.gd" id="1_hxb4y"]
+
+[node name="PathfindingUI" type="CanvasLayer" unique_id=320692542]
+script = ExtResource("1_hxb4y")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=903807546]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 98.0
+grow_horizontal = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1154290912]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=2127071256]
+layout_mode = 2
+
+[node name="LabelAlgo" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=262861157]
+layout_mode = 2
+
+[node name="OptionAlgo" type="OptionButton" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=2130885630]
+layout_mode = 2
+
+[node name="LabelHeuristic" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1701095628]
+layout_mode = 2
+
+[node name="OptionHeuristic" type="OptionButton" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1206220914]
+layout_mode = 2
