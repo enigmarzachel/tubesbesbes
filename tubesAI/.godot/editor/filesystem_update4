@@ -1,0 +1,3 @@
+res://scripts/GridManager.gd
+res://scripts/player/tesplayer.gd
+res://scripts/pathfinding.gd
