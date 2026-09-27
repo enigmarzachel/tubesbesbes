@@ -30,14 +30,25 @@ func is_passable(cell: Vector2i) -> bool:
 	return lantai_data != null
 
 #idupin kalo udah ada tile ber cost tinggi
-#func get_step_cost(cell: Vector2i) -> float:
-	#if lantai:
-		#var tile_data = lantai.get_cell_tile_data(cell)
-		#if tile_data and tile_data.get_custom_data("is_water"):
-			#return 7.0
-	#return 1.0
+# GridManager.gd
+var duri_cells: Dictionary = {} # Menyimpan koordinat Vector2i: float cost
+
+func register_duri(grid_pos: Vector2i, cost: float = 10.0) -> void:
+	duri_cells[grid_pos] = cost
+
+func unregister_duri(grid_pos: Vector2i) -> void:
+	duri_cells.erase(grid_pos)
+
+func get_step_cost(cell: Vector2i) -> float:
+	# Jika petak ini ada jebakan, kembalikan cost tinggi
+	if duri_cells.has(cell):
+		print("Petak ", cell, " adalah DURI! Cost: ", duri_cells[cell])
+		return duri_cells[cell]
+		
+	# Default cost biasa
+	return 1.0
 
 #matiin kalo udah ada tile ber cost tinggi
-func get_step_cost(_cell: Vector2i) -> float:
-	# Default cost semua petak adalah 1.0
-	return 1.0
+#func get_step_cost(_cell: Vector2i) -> float:
+	## Default cost semua petak adalah 1.0
+	#return 1.0

@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://od4x6fyg5eeh"]
+
+[ext_resource type="Texture2D" uid="uid://dwk77xv8jebaa" path="res://assets/sprites/tiles/Dungeon tileset/duri.png" id="1_3sd3u"]
+[ext_resource type="Script" uid="uid://ch3huanosvq37" path="res://scripts/duri.gd" id="1_ruut0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ruut0"]
+atlas = ExtResource("1_3sd3u")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gr2ix"]
+atlas = ExtResource("1_3sd3u")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_abf21"]
+atlas = ExtResource("1_3sd3u")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8gjlx"]
+atlas = ExtResource("1_3sd3u")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pu4tr"]
+atlas = ExtResource("1_3sd3u")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_teuer"]
+atlas = ExtResource("1_3sd3u")
+region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1xlpn"]
+animations = [{
+"frames": [{
+"duration": 7.0,
+"texture": SubResource("AtlasTexture_ruut0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gr2ix")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_abf21")
+}, {
+"duration": 7.0,
+"texture": SubResource("AtlasTexture_8gjlx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pu4tr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_teuer")
+}],
+"loop": 1,
+"name": &"duri",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bjqgx"]
+size = Vector2(64, 64)
+
+[node name="duri" type="Area2D" unique_id=387120591]
+script = ExtResource("1_ruut0")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1838713163]
+sprite_frames = SubResource("SpriteFrames_1xlpn")
+animation = &"duri"
+autoplay = "duri"
+frame_progress = 0.58741874
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=222587627]
+shape = SubResource("RectangleShape2D_bjqgx")
+disabled = true

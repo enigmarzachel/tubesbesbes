@@ -1,3 +1,2 @@
-res://scripts/GridManager.gd
-res://scripts/player/tesplayer.gd
-res://scripts/pathfinding.gd
+res://scripts/tesEnemy.gd
+res://scenes/tahap_2.tscn

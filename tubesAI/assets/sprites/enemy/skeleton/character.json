@@ -1,0 +1,324 @@
+{
+  "version": 2,
+  "bodyType": "male",
+  "selections": {
+    "expression": {
+      "itemId": "face_neutral",
+      "subId": null,
+      "variant": "",
+      "recolor": "light",
+      "name": "Neutral (light)"
+    },
+    "body": {
+      "itemId": "body_skeleton",
+      "subId": null,
+      "variant": "",
+      "recolor": "white",
+      "name": "Skeleton (white)"
+    },
+    "head": {
+      "itemId": "heads_skeleton",
+      "subId": null,
+      "variant": "",
+      "recolor": "white",
+      "name": "Skeleton (white)"
+    },
+    "weapon": {
+      "itemId": "weapon_sword_longsword",
+      "subId": null,
+      "variant": "longsword",
+      "recolor": "",
+      "name": "Longsword (longsword)"
+    },
+    "shield": {
+      "itemId": "shield_round",
+      "subId": null,
+      "variant": "black",
+      "recolor": "",
+      "name": "Round Shield (black)"
+    }
+  },
+  "selectedAnimation": "slash_reverse_oversize",
+  "showTransparencyGrid": true,
+  "applyTransparencyMask": false,
+  "matchBodyColorEnabled": true,
+  "compactDisplay": false,
+  "enabledLicenses": {
+    "CC0": true,
+    "CC-BY-SA": true,
+    "CC-BY": true,
+    "OGA-BY": true,
+    "GPL": true
+  },
+  "enabledAnimations": {
+    "spellcast": false,
+    "thrust": false,
+    "walk": false,
+    "slash": false,
+    "shoot": false,
+    "hurt": false,
+    "climb": false,
+    "idle": false,
+    "jump": false,
+    "sit": false,
+    "emote": false,
+    "run": false,
+    "watering": false,
+    "combat": false,
+    "1h_slash": false,
+    "1h_backslash": false,
+    "1h_halfslash": false
+  },
+  "url": "https://liberatedpixelcup.github.io/Universal-LPC-Spritesheet-Character-Generator/#sex=male&expression=Neutral_light&body=Skeleton_white&head=Skeleton_white&weapon=Longsword_longsword&shield=Round_Shield_black",
+  "layers": [
+    {
+      "itemId": "weapon_sword_longsword",
+      "name": "Longsword (longsword)",
+      "variant": "longsword",
+      "recolors": null,
+      "zPos": 9,
+      "layerNum": 2,
+      "yPos": 512,
+      "needsRecolor": false,
+      "source": {
+        "kind": "catalog",
+        "spritePath": "weapon/sword/longsword/universal_behind/walk/longsword.png"
+      },
+      "supportedAnimations": [
+        "walk",
+        "hurt"
+      ]
+    },
+    {
+      "itemId": "body_skeleton",
+      "name": "Skeleton (white)",
+      "variant": "",
+      "recolors": {
+        "body": "white"
+      },
+      "zPos": 10,
+      "layerNum": 1,
+      "yPos": 0,
+      "needsRecolor": false,
+      "source": {
+        "kind": "catalog",
+        "spritePath": "body/bodies/skeleton/spellcast.png"
+      },
+      "supportedAnimations": [
+        "spellcast",
+        "thrust",
+        "walk",
+        "slash",
+        "shoot",
+        "hurt",
+        "idle"
+      ]
+    },
+    {
+      "itemId": "heads_skeleton",
+      "name": "Skeleton (white)",
+      "variant": "",
+      "recolors": {
+        "head": "white"
+      },
+      "zPos": 100,
+      "layerNum": 1,
+      "yPos": 0,
+      "needsRecolor": false,
+      "source": {
+        "kind": "catalog",
+        "spritePath": "head/heads/skeleton/adult/spellcast.png"
+      },
+      "supportedAnimations": [
+        "spellcast",
+        "thrust",
+        "walk",
+        "slash",
+        "shoot",
+        "hurt",
+        "climb",
+        "idle",
+        "jump",
+        "sit",
+        "emote",
+        "run",
+        "combat_idle",
+        "backslash",
+        "halfslash"
+      ]
+    },
+    {
+      "itemId": "face_neutral",
+      "name": "Neutral (light)",
+      "variant": "",
+      "recolors": {
+        "expression": "light"
+      },
+      "zPos": 101,
+      "layerNum": 1,
+      "yPos": 0,
+      "needsRecolor": false,
+      "source": {
+        "kind": "catalog",
+        "spritePath": "head/faces/${head}/neutral/spellcast.png"
+      },
+      "supportedAnimations": [
+        "spellcast",
+        "thrust",
+        "walk",
+        "slash",
+        "shoot",
+        "idle",
+        "jump",
+        "sit",
+        "emote",
+        "run",
+        "combat_idle",
+        "backslash",
+        "halfslash"
+      ]
+    },
+    {
+      "itemId": "shield_round",
+      "name": "Round Shield (black)",
+      "variant": "black",
+      "recolors": null,
+      "zPos": 110,
+      "layerNum": 1,
+      "yPos": 0,
+      "needsRecolor": false,
+      "source": {
+        "kind": "catalog",
+        "spritePath": "shield/round/spellcast/black.png"
+      },
+      "supportedAnimations": [
+        "spellcast",
+        "thrust",
+        "walk",
+        "slash",
+        "shoot",
+        "hurt"
+      ]
+    },
+    {
+      "itemId": "weapon_sword_longsword",
+      "name": "Longsword (longsword)",
+      "variant": "longsword",
+      "recolors": null,
+      "zPos": 140,
+      "layerNum": 1,
+      "yPos": 512,
+      "needsRecolor": false,
+      "source": {
+        "kind": "catalog",
+        "spritePath": "weapon/sword/longsword/walk/longsword.png"
+      },
+      "supportedAnimations": [
+        "walk",
+        "hurt"
+      ]
+    }
+  ],
+  "credits": [
+    {
+      "fileName": "head/faces/${head}/neutral/walk.png",
+      "file": "head/faces",
+      "notes": "Original by Redshrike, Expressions by ElizaWy, mapped to all frames by JaidynReiman",
+      "authors": [
+        "JaidynReiman",
+        "ElizaWy",
+        "Stephen Challener (Redshrike)"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://github.com/ElizaWy/LPC/tree/main/Characters/Head",
+        "https://opengameart.org/content/ulpc-expanded-expressions"
+      ]
+    },
+    {
+      "fileName": "body/bodies/skeleton/walk.png",
+      "file": "body/bodies/skeleton",
+      "notes": "",
+      "authors": [
+        "bluecarrot16",
+        "Napsio",
+        "JaidynReiman",
+        "Johannes Sjölund (wulax)",
+        "Stephen Challener (Redshrike)"
+      ],
+      "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+        "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+        "https://opengameart.org/content/lpc-skeleton",
+        "https://opengameart.org/content/lpc-character-bases"
+      ]
+    },
+    {
+      "fileName": "head/heads/skeleton/adult/walk.png",
+      "file": "head/heads/skeleton",
+      "notes": "",
+      "authors": [
+        "bluecarrot16",
+        "Napsio",
+        "JaidynReiman",
+        "Johannes Sjölund (wulax)",
+        "Stephen Challener (Redshrike)"
+      ],
+      "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+        "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+        "https://opengameart.org/content/lpc-skeleton",
+        "https://opengameart.org/content/lpc-character-bases"
+      ]
+    },
+    {
+      "fileName": "weapon/sword/longsword/walk/longsword.png",
+      "file": "weapon/sword/longsword",
+      "notes": "",
+      "authors": [
+        "Johannes Sjölund (wulax)",
+        "bluecarrot16"
+      ],
+      "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+        "https://opengameart.org/content/lpc-extended-weapon-animations"
+      ]
+    },
+    {
+      "fileName": "shield/round/walk/black.png",
+      "file": "shield/round",
+      "notes": "",
+      "authors": [
+        "Johannes Sjölund (wulax)",
+        "Michael Whitlock (bigbeargames)",
+        "DarkwallLKE",
+        "Tuomo Untinen (reemax)"
+      ],
+      "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+        "https://opengameart.org/content/lpc-shields-pack"
+      ]
+    }
+  ]
+}
