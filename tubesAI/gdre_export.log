@@ -1,0 +1,33 @@
+GDRE Tools v2.6.4
+Windows 10.0.26200, Intel(R) UHD Graphics, vulkan
+Opening file: C:/Users/aghni/Downloads/tubesbesbes-dasar/tubesbesbes-dasar/index.pck
+Loaded 46 imported files
+Detected Engine Version: 4.7.2
+Detected Bytecode Revision: 4.5.0-stable (ebc36a7)
+Verified 96 files, no errors detected!
+Extracted 96 files, no errors detected!
+Saved project config.
+
+
+********************************EXPORT REPORT********************************
+
+Totals:                                 
+Decompiled scripts:                     1
+Scripts not decompiled:                 0
+Imported resources for export session:  46
+Successfully converted:                 46
+Lossy:                                  1
+Rewrote metadata:                       41
+Non-importable conversions:             0
+Not converted:                          0
+Failed conversions:                     0
+-------------
+
+
+
+------------------------------------------------------------------------------------
+
+Use Godot editor version 4.7.2 to edit the project.
+
+*******************************************************************************
+

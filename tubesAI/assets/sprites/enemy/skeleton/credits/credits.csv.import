@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://db7sqnqo1e8f3"
+
+[deps]
+
+files=["res://assets/sprites/enemy/skeleton/credits/credits.notes.translation", "res://assets/sprites/enemy/skeleton/credits/credits.authors.translation", "res://assets/sprites/enemy/skeleton/credits/credits.licenses.translation", "res://assets/sprites/enemy/skeleton/credits/credits.urls.translation"]
+
+source_file="res://assets/sprites/enemy/skeleton/credits/credits.csv"
+dest_files=["res://assets/sprites/enemy/skeleton/credits/credits.notes.translation", "res://assets/sprites/enemy/skeleton/credits/credits.authors.translation", "res://assets/sprites/enemy/skeleton/credits/credits.licenses.translation", "res://assets/sprites/enemy/skeleton/credits/credits.urls.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true
