@@ -57,6 +57,7 @@ animations = [{
 size = Vector2(64, 64)
 
 [node name="duri" type="Area2D" unique_id=387120591]
+collision_layer = 4
 script = ExtResource("1_ruut0")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1838713163]

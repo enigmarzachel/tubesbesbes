@@ -1,4 +1,3 @@
-# duri.gd
 extends Area2D
 
 @export var tilemap_layer: TileMapLayer

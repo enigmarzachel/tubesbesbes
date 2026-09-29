@@ -4,12 +4,13 @@
 [ext_resource type="PackedScene" uid="uid://bfixc6sisxn0r" path="res://scenes/player.tscn" id="2"]
 [ext_resource type="Script" uid="uid://chl1phhsmhvtp" path="res://scripts/GridManager.gd" id="2_lxqar"]
 [ext_resource type="PackedScene" uid="uid://cu8oxfa75ybfm" path="res://scenes/enemy.tscn" id="3_2akga"]
-[ext_resource type="Script" uid="uid://bxtox7a2pet2l" path="res://scripts/player/tesplayer.gd" id="4_i4b3q"]
-[ext_resource type="Script" uid="uid://cqrjr18lu2ows" path="res://scripts/enemy.gd" id="4_v6n2i"]
-[ext_resource type="Script" uid="uid://cqys73e20njsp" path="res://scripts/tesEnemy.gd" id="7_lxqar"]
+[ext_resource type="Script" uid="uid://bxtox7a2pet2l" path="res://scripts/player/player.gd" id="4_i4b3q"]
+[ext_resource type="Script" uid="uid://cqys73e20njsp" path="res://scripts/enemy.gd" id="7_lxqar"]
 [ext_resource type="PackedScene" uid="uid://b0nor5o7q75ww" path="res://scenes/PathfindingUI.tscn" id="9_4g0bi"]
 [ext_resource type="Script" uid="uid://bvey4822pypa5" path="res://scripts/PathfindingDebug.gd" id="9_vbkg1"]
 [ext_resource type="PackedScene" uid="uid://od4x6fyg5eeh" path="res://scenes/duri.tscn" id="10_vbkg1"]
+[ext_resource type="PackedScene" uid="uid://skuf56gcqco0" path="res://scenes/Battle_UI.tscn" id="11_ti84v"]
+[ext_resource type="Script" uid="uid://wscd2bodwj63" path="res://scripts/BattleManager.gd" id="12_1kpks"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7rp6v"]
 texture = ExtResource("1")
@@ -644,7 +645,7 @@ tile_set = SubResource("TileSet_uqv50")
 [node name="entities" type="Node2D" parent="." unique_id=327056391]
 
 [node name="player" parent="entities" unique_id=1737127765 instance=ExtResource("2")]
-position = Vector2(-43, -38)
+position = Vector2(-31.000004, -33.000004)
 scale = Vector2(1.3, 1.3)
 script = ExtResource("4_i4b3q")
 
@@ -652,38 +653,77 @@ script = ExtResource("4_i4b3q")
 zoom = Vector2(2.5, 2.5)
 position_smoothing_speed = 10.0
 
-[node name="tesEnemy" parent="entities" unique_id=1151298983 node_paths=PackedStringArray("tilemap_layer", "grid_manager", "player", "debug_node") instance=ExtResource("3_2akga")]
-position = Vector2(-226, 19.000004)
+[node name="enemy2" parent="entities" unique_id=1151298983 node_paths=PackedStringArray("tilemap_layer", "grid_manager", "player", "debug_node", "battle_manager") instance=ExtResource("3_2akga")]
+position = Vector2(-283.00003, 11.000001)
 scale = Vector2(1.3, 1.3)
 script = ExtResource("7_lxqar")
 tilemap_layer = NodePath("../../lantai")
 grid_manager = NodePath("../..")
 player = NodePath("../player")
 debug_node = NodePath("../../PathfindingDebug")
+battle_manager = NodePath("../../Node")
+initial_patrol_direction = 1
+step_cooldown = 0.25
+detection_radius_tiles = 5
+out_of_sight_distance_tiles = 7
+
+[node name="enemy3" parent="entities" unique_id=1437900979 node_paths=PackedStringArray("tilemap_layer", "grid_manager", "player", "debug_node", "battle_manager") instance=ExtResource("3_2akga")]
+position = Vector2(-253, 222.00002)
+scale = Vector2(1.3, 1.3)
+script = ExtResource("7_lxqar")
+tilemap_layer = NodePath("../../lantai")
+grid_manager = NodePath("../..")
+player = NodePath("../player")
+debug_node = NodePath("../../PathfindingDebug")
+battle_manager = NodePath("../../Node")
+initial_patrol_direction = 3
+step_cooldown = 0.25
+detection_radius_tiles = 5
+out_of_sight_distance_tiles = 7
+
+[node name="enemy4" parent="entities" unique_id=1184623585 node_paths=PackedStringArray("tilemap_layer", "grid_manager", "player", "debug_node", "battle_manager") instance=ExtResource("3_2akga")]
+position = Vector2(-526, 276.00003)
+scale = Vector2(1.3, 1.3)
+script = ExtResource("7_lxqar")
+tilemap_layer = NodePath("../../lantai")
+grid_manager = NodePath("../..")
+player = NodePath("../player")
+debug_node = NodePath("../../PathfindingDebug")
+battle_manager = NodePath("../../Node")
+step_cooldown = 0.25
+detection_radius_tiles = 5
+out_of_sight_distance_tiles = 7
+
+[node name="enemy5" parent="entities" unique_id=1229817182 node_paths=PackedStringArray("tilemap_layer", "grid_manager", "player", "debug_node", "battle_manager") instance=ExtResource("3_2akga")]
+position = Vector2(-636.00006, -19)
+scale = Vector2(1.3, 1.3)
+script = ExtResource("7_lxqar")
+tilemap_layer = NodePath("../../lantai")
+grid_manager = NodePath("../..")
+player = NodePath("../player")
+debug_node = NodePath("../../PathfindingDebug")
+battle_manager = NodePath("../../Node")
+initial_patrol_direction = 1
+step_cooldown = 0.25
+detection_radius_tiles = 5
+out_of_sight_distance_tiles = 7
+
+[node name="enemy6" parent="entities" unique_id=561160324 node_paths=PackedStringArray("tilemap_layer", "grid_manager", "player", "debug_node", "battle_manager") instance=ExtResource("3_2akga")]
+position = Vector2(-579.00006, -339.00003)
+scale = Vector2(1.3, 1.3)
+script = ExtResource("7_lxqar")
+tilemap_layer = NodePath("../../lantai")
+grid_manager = NodePath("../..")
+player = NodePath("../player")
+debug_node = NodePath("../../PathfindingDebug")
+battle_manager = NodePath("../../Node")
+initial_patrol_direction = 3
+step_cooldown = 0.25
+detection_radius_tiles = 5
+out_of_sight_distance_tiles = 7
 
 [node name="enemy" type="Node2D" parent="entities" unique_id=1643256366]
 scale = Vector2(1.3, 1.3)
-
-[node name="Enemy_hor" parent="entities/enemy" unique_id=276173774 instance=ExtResource("3_2akga")]
-position = Vector2(-296.92307, 203.84616)
-script = ExtResource("4_v6n2i")
-
-[node name="Enemy_hor2" parent="entities/enemy" unique_id=943891767 instance=ExtResource("3_2akga")]
-position = Vector2(-476.15387, 200.76924)
-script = ExtResource("4_v6n2i")
-
-[node name="Enemy_hor3" parent="entities/enemy" unique_id=510124012 instance=ExtResource("3_2akga")]
-position = Vector2(-203.84616, 209.23079)
-script = ExtResource("4_v6n2i")
-
-[node name="Enemy2_ver" parent="entities/enemy" unique_id=1393448576 instance=ExtResource("3_2akga")]
-position = Vector2(-233.84616, -16.923077)
-
-[node name="Enemy2_ver2" parent="entities/enemy" unique_id=1364446427 instance=ExtResource("3_2akga")]
-position = Vector2(-515.38464, -270)
-
-[node name="Enemy2_ver3" parent="entities/enemy" unique_id=2097112798 instance=ExtResource("3_2akga")]
-position = Vector2(-493.84616, -196.92308)
 
 [node name="verticalTop" type="TileMapLayer" parent="." unique_id=1711455687]
 tile_map_data = PackedByteArray("AADz/wYAAQACAAMAAADy/wYAAQACAAAAAAABAPr/AQACAAEAAAACAPr/AQADAAAAAAAAAPj/AQACAAMAAAD///j/AQADAAAAAAD+//j/AQADAAAAAAD9//j/AQADAAMAAAD8//j/AQADAAMAAAD7//j/AQACAAMAAAD6//j/AQADAAAAAAD5//r/AQACAAEAAAD4//r/AQADAAMAAAD3//z/AQACAAEAAAD2//z/AQACAAEAAAD1//v/AQACAAMAAAD0//v/AQACAAEAAADz//r/AQACAAEAAADy//n/AQADAAMAAADx//n/AQADAAAAAADw//n/AQADAAAAAADv//n/AQADAAMAAADu//n/AQADAAMAAADt//n/AQADAAAAAADs//v/AQACAAEAAADh//v/AQADAAAAAADg//v/AQADAAAAAADf//v/AQACAAEAAADe//v/AQAAAAEAAADZ//v/AQADAAMAAADY//v/AQACAAEAAADX//v/AQADAAMAAADW//v/AQADAAMAAADY/wsAAQACAAEAAADX/wwAAQAEAAEAAADf/wsAAQACAAEAAADg/wsAAQADAAAAAADh/wwAAQACAAEAAADi/wwAAQACAAMAAADj/wwAAQADAAAAAADk/wwAAQADAAMAAADl/wwAAQABAAEAAADm/wwAAQACAAMAAADn/wwAAQACAAEAAADo/woAAQADAAMAAADp/woAAQACAAMAAADq/woAAQADAAMAAADr/woAAQACAAEAAADs/wgAAQACAAEAAADy/wgAAQACAAEAAADz/wgAAQACAAMAAAD0/wgAAQADAAAAAAD1/wgAAQADAAAAAAD2/wgAAQADAAMAAAD3/wgAAQADAAMAAAABAAUAAQACAAEAAAD5/wUAAQACAAEAAAD1/wQAAQACAAEAAAD0/wUAAQACAAEAAADy/wcAAQACAAEAAADs/xUAAQACAAEAAADo/xQAAQACAAEAAADi/xQAAQACAAEAAADX/xYAAQACAAEAAADf/woAAQACAAEAAADY/woAAQACAAEAAAD5//j/AQACAAAAAAD3//r/AQACAAAAAAD5//n/AQACAAEAAAD3//v/AQACAAEAAAD2//v/AQAEAAAAAAD0//r/AQAEAAAAAADz//n/AQAEAAAAAADs//n/AQACAAAAAADs//r/AQACAAEAAAABAPj/AQAEAAAAAAABAPn/AQACAAEAAADp//z/AQACAAEAAADp//3/AQACAAEAAADp//7/AQACAAEAAADp////AQACAAEAAADp/wAAAQACAAEAAADp/wEAAQACAAEAAADp/wIAAQACAAEAAADp/wMAAQACAAEAAADp/wQAAQACAAEAAADs/wUAAQACAAEAAADs/wYAAQACAAEAAADs/wcAAQACAAEAAADr/wkAAQACAAEAAADr/wgAAQACAAAAAAD0/wYAAQACAAEAAAD5/wYAAQACAAEAAAABAAYAAQACAAEAAAADAAQAAQACAAEAAAADAAMAAQACAAEAAAADAAIAAQACAAEAAAADAAEAAQACAAEAAAADAAAAAQACAAEAAAADAP//AQACAAEAAAADAP7/AQACAAEAAAADAP3/AQACAAEAAAADAPz/AQACAAEAAAADAPv/AQACAAEAAAADAPr/AQAEAAAAAAD4/wgAAQAEAAAAAAD4/wkAAQACAAEAAAD4/woAAQACAAEAAAD4/wsAAQACAAEAAAD4/wwAAQACAAEAAAD4/w0AAQACAAEAAAD4/w4AAQACAAEAAAD4/w8AAQACAAEAAAD4/xAAAQACAAEAAAD4/xEAAQACAAEAAAD4/xIAAQACAAEAAAD4/xMAAQACAAEAAAD4/xQAAQACAAEAAAD4/xUAAQACAAEAAAD4/xYAAQACAAEAAAD4/xcAAQACAAEAAADi/xUAAQACAAEAAADi/xYAAQACAAEAAADW/xUAAQACAAEAAADW/xQAAQACAAEAAADW/xMAAQACAAEAAADW/xIAAQACAAEAAADW/xEAAQACAAEAAADW/xAAAQACAAEAAADW/w8AAQACAAEAAADW/w4AAQACAAEAAADW/w0AAQACAAEAAADW/wwAAQACAAAAAADX/wsAAQACAAAAAADV/wkAAQACAAEAAADV/wgAAQACAAEAAADV/wcAAQACAAEAAADV/wYAAQACAAEAAADV/wUAAQACAAEAAADV/wQAAQACAAEAAADV/wMAAQACAAEAAADV/wIAAQACAAEAAADV/wEAAQACAAEAAADV/wAAAQACAAEAAADV////AQACAAEAAADV//7/AQACAAEAAADV//3/AQACAAEAAADV//z/AQACAAEAAADV//v/AQACAAAAAADi//v/AQAEAAAAAADi//z/AQACAAEAAADi//3/AQACAAEAAADi//7/AQACAAEAAADi////AQACAAEAAADi/wAAAQACAAEAAADi/wEAAQACAAEAAADi/wIAAQACAAEAAADi/wMAAQACAAEAAADi/wQAAQACAAEAAADi/wUAAQACAAEAAADi/wYAAQACAAEAAADi/wcAAQACAAEAAADi/wgAAQACAAEAAADi/wkAAQACAAEAAADh/wsAAQAEAAAAAADn/woAAQACAAAAAADn/wsAAQACAAEAAADs/xcAAQACAAEAAADs/xYAAQACAAEAAADY//r/AQACAAEAAADY//n/AQACAAEAAADY//j/AQACAAEAAADY//f/AQACAAEAAADf//r/AQACAAEAAADf//n/AQACAAEAAADf//j/AQACAAEAAADf//f/AQACAAEAAADT//T/AQACAAEAAADT//P/AQACAAEAAADT//L/AQACAAEAAADT//H/AQACAAEAAADT//D/AQACAAEAAADT/+//AQACAAEAAADT/+7/AQACAAEAAADT/+3/AQACAAEAAADT/+v/AQACAAEAAADT/+r/AQACAAEAAADT/+n/AQACAAEAAADT/+z/AQACAAEAAADT/+j/AQACAAEAAADk/+z/AQACAAEAAADk/+3/AQACAAEAAADk/+7/AQACAAEAAADk/+//AQACAAEAAADk//D/AQACAAEAAADk//H/AQACAAEAAADk//L/AQACAAEAAADk//P/AQACAAEAAADk//T/AQACAAEAAADk//X/AQACAAEAAADT//X/AQACAAEAAADT//b/AQACAAEAAADk//b/AQACAAEAAADT/+f/AQACAAEAAADU/+b/AQADAAAAAADV/+b/AQADAAAAAADW/+b/AQADAAMAAADX/+b/AQADAAMAAADY/+b/AQADAAMAAADZ/+b/AQADAAMAAADa/+b/AQADAAMAAADb/+b/AQADAAMAAADc/+b/AQADAAMAAADd/+b/AQADAAAAAADe/+b/AQACAAMAAADf/+b/AQADAAMAAADg/+b/AQACAAMAAADh/+b/AQADAAAAAADi/+b/AQADAAMAAADj/+b/AQADAAAAAADT/+b/AQACAAAAAADk/+b/AQAEAAAAAADp//v/AQACAAAAAADq//v/AQACAAMAAADr//v/AQADAAMAAAD3/wQAAQACAAEAAADk/+f/AQACAAEAAADk/+j/AQACAAEAAADk/+n/AQACAAEAAADk/+r/AQACAAEAAADk/+v/AQACAAEAAAA=")
@@ -704,3 +744,9 @@ offset_bottom = 40.0
 [node name="PathfindingDebug" type="Node2D" parent="." unique_id=2046355647 node_paths=PackedStringArray("tilemap_layer")]
 script = ExtResource("9_vbkg1")
 tilemap_layer = NodePath("../lantai")
+
+[node name="BattleUI" parent="." unique_id=644165056 instance=ExtResource("11_ti84v")]
+
+[node name="Node" type="Node" parent="." unique_id=1738851759]
+script = ExtResource("12_1kpks")
+battle_ui_path = NodePath("../BattleUI")

@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://skuf56gcqco0"]
+
+[ext_resource type="Script" uid="uid://bq0xh6vh0gwmo" path="res://scripts/BattleUI.gd" id="1_cijee"]
+
+[node name="BattleUI" type="CanvasLayer" unique_id=644165056]
+script = ExtResource("1_cijee")
+
+[node name="Control" type="Control" parent="." unique_id=974361130]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelBattle" type="Panel" parent="Control" unique_id=1517996569]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 500.0
+
+[node name="VBox" type="VBoxContainer" parent="Control/PanelBattle" unique_id=1769242736]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerStats" type="HBoxContainer" parent="Control/PanelBattle/VBox" unique_id=1626788046]
+layout_mode = 2
+
+[node name="LblPlayerHP" type="Label" parent="Control/PanelBattle/VBox/PlayerStats" unique_id=1215117922]
+layout_mode = 2
+
+[node name="LblPlayerPot" type="Label" parent="Control/PanelBattle/VBox/PlayerStats" unique_id=564673904]
+layout_mode = 2
+
+[node name="NPCStats" type="HBoxContainer" parent="Control/PanelBattle/VBox" unique_id=2011366763]
+layout_mode = 2
+
+[node name="LblNPCHP" type="Label" parent="Control/PanelBattle/VBox/NPCStats" unique_id=1477520720]
+layout_mode = 2
+
+[node name="LblNPCPot" type="Label" parent="Control/PanelBattle/VBox/NPCStats" unique_id=1499673824]
+layout_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="Control/PanelBattle/VBox" unique_id=842901374]
+layout_mode = 2
+
+[node name="BtnAttack" type="Button" parent="Control/PanelBattle/VBox/Actions" unique_id=679226379]
+custom_minimum_size = Vector2(75, 55)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Attack
+"
+
+[node name="BtnDefend" type="Button" parent="Control/PanelBattle/VBox/Actions" unique_id=962098733]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Defend"
+
+[node name="BtnPotion" type="Button" parent="Control/PanelBattle/VBox/Actions" unique_id=1040309656]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Potion"
+
+[node name="BtnHeavy" type="Button" parent="Control/PanelBattle/VBox/Actions" unique_id=1536355940]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "HeavyAttack"
+
+[node name="TxtLog" type="TextEdit" parent="Control/PanelBattle/VBox" unique_id=1764823258]
+custom_minimum_size = Vector2(300, 120)
+layout_mode = 2
+
+[node name="PanelDebug" type="Panel" parent="Control" unique_id=182744019]
+layout_mode = 0
+offset_left = 898.0
+offset_top = 283.0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="VBox" type="VBoxContainer" parent="Control/PanelDebug" unique_id=2052283057]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 2.0
+offset_right = -1.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LblAlgo" type="Label" parent="Control/PanelDebug/VBox" unique_id=1789658563]
+layout_mode = 2
+
+[node name="LblNodes" type="Label" parent="Control/PanelDebug/VBox" unique_id=1996848169]
+layout_mode = 2
+
+[node name="LblTime" type="Label" parent="Control/PanelDebug/VBox" unique_id=2063211616]
+layout_mode = 2
+
+[node name="ListEvals" type="ItemList" parent="Control/PanelDebug/VBox" unique_id=1862095697]
+custom_minimum_size = Vector2(250, 150)
+layout_mode = 2
+
+[node name="TableComparison" type="RichTextLabel" parent="Control/PanelDebug/VBox" unique_id=1492530911]
+custom_minimum_size = Vector2(280, 160)
+layout_mode = 2
+bbcode_enabled = true
