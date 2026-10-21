@@ -1,0 +1,14 @@
+Sprite2D
+RichTextLabel
+Node
+ItemList
+Label
+VBoxContainer
+Panel
+TextEdit
+Button
+HBoxContainer
+Control
+CanvasLayer
+CollisionShape2D
+AnimatedSprite2D
