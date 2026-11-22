@@ -2,16 +2,17 @@
 
 [ext_resource type="Texture2D" uid="uid://duc1w1cdv8otk" path="res://assets/sprites/tiles/Dungeon tileset/Dungeon tileset.png" id="1"]
 [ext_resource type="PackedScene" uid="uid://bfixc6sisxn0r" path="res://scenes/player.tscn" id="2"]
-[ext_resource type="Script" uid="uid://chl1phhsmhvtp" path="res://scripts/GridManager.gd" id="2_lxqar"]
+[ext_resource type="Script" uid="uid://chl1phhsmhvtp" path="res://scripts/gameplay_integration/GridManager.gd" id="2_lxqar"]
 [ext_resource type="PackedScene" uid="uid://cu8oxfa75ybfm" path="res://scenes/enemy.tscn" id="3_2akga"]
 [ext_resource type="Script" uid="uid://bxtox7a2pet2l" path="res://scripts/player/player.gd" id="4_i4b3q"]
-[ext_resource type="Script" uid="uid://cqys73e20njsp" path="res://scripts/enemy.gd" id="7_lxqar"]
+[ext_resource type="Script" uid="uid://cqys73e20njsp" path="res://scripts/week_02_agents/enemy.gd" id="7_lxqar"]
 [ext_resource type="PackedScene" uid="uid://b0nor5o7q75ww" path="res://scenes/PathfindingUI.tscn" id="9_4g0bi"]
-[ext_resource type="Script" uid="uid://bvey4822pypa5" path="res://scripts/PathfindingDebug.gd" id="9_vbkg1"]
+[ext_resource type="Script" uid="uid://bvey4822pypa5" path="res://scripts/week_03_pathfinding/PathfindingDebug.gd" id="9_vbkg1"]
 [ext_resource type="PackedScene" uid="uid://od4x6fyg5eeh" path="res://scenes/duri.tscn" id="10_vbkg1"]
 [ext_resource type="PackedScene" uid="uid://skuf56gcqco0" path="res://scenes/Battle_UI.tscn" id="11_ti84v"]
-[ext_resource type="Script" uid="uid://wscd2bodwj63" path="res://scripts/BattleManager.gd" id="12_1kpks"]
+[ext_resource type="Script" uid="uid://wscd2bodwj63" path="res://scripts/week_04_adversarial_search/BattleManager.gd" id="12_1kpks"]
 [ext_resource type="PackedScene" path="res://scenes/StageClearUI.tscn" id="13_clear"]
+[ext_resource type="Script" path="res://scripts/week_07_logic/LogicInferenceOverlay.gd" id="14_logic_overlay"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7rp6v"]
 texture = ExtResource("1")
@@ -753,3 +754,6 @@ script = ExtResource("12_1kpks")
 battle_ui_path = NodePath("../BattleUI")
 
 [node name="StageClearUI" parent="." instance=ExtResource("13_clear")]
+
+[node name="LogicInferenceOverlay" type="CanvasLayer" parent="."]
+script = ExtResource("14_logic_overlay")

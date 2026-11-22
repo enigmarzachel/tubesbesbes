@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/StageClearUI.gd" id="1_stage_clear"]
+[ext_resource type="Script" path="res://scripts/gameplay_integration/StageClearUI.gd" id="1_stage_clear"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
 bg_color = Color(0.101961, 0.109804, 0.156863, 0.96)

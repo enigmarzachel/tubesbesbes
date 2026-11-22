@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://od4x6fyg5eeh"]
 
 [ext_resource type="Texture2D" uid="uid://dwk77xv8jebaa" path="res://assets/sprites/tiles/Dungeon tileset/duri.png" id="1_3sd3u"]
-[ext_resource type="Script" uid="uid://ch3huanosvq37" path="res://scripts/duri.gd" id="1_ruut0"]
+[ext_resource type="Script" uid="uid://ch3huanosvq37" path="res://scripts/gameplay_integration/duri.gd" id="1_ruut0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ruut0"]
 atlas = ExtResource("1_3sd3u")
